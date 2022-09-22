@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import data from "./data";
+import Article from "./Article";
+
+const getStorageTheme = () => {
+	let theme = 'light-theme';
+	if (localStorage.getItem('theme')) {
+		theme = localStorage.getItem('theme') as string;
+	}
+	return theme;
+};
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [theme, setTheme] = useState(getStorageTheme());
+
+	const toggleTheme = () => {
+		if (theme === 'light-theme') {
+			setTheme('dark-theme');
+		} else {
+			setTheme('light-theme');
+		}
+	};
+
+	useEffect(() => {
+		document.documentElement.className = theme;
+		localStorage.setItem('theme', theme);
+	}, [theme]);
+
+	return (
+		<main>
+			<nav>
+				<div className="nav-center">
+					<h1>overreacted</h1>
+					<button className="btn" onClick={toggleTheme}>
+						toggle
+					</button>
+				</div>
+			</nav>
+			<section className="articles">
+				{data.map((item) => {
+					return <Article key={item.id} {...item} />;
+				})}
+			</section>
+		</main>
+	);
 }
 
 export default App;
